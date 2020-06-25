@@ -1,5 +1,5 @@
 # deepsea-tfdetect #
-MBARI Deep Sea Image Detector
+MBARI Deep Sea Image Object Detector
 This is a dockerized implementation of the TensorFlow object detector for use in ML workflows with the MLFlow framework.
 It trains images using the [Tensorflow Object Detection API](https://github.com/tensorflow/models/tree/master/research/object_detection) and stores results in a [MLFlow](https://github.com/mlflow/mlflow) tracking server and optionally in the [Wandb](http://wandb.com) service.
 Quite a few models are supported in the API, including:
