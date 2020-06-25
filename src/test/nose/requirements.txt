@@ -1,0 +1,3 @@
+coverage
+nose-watch
+nose==1.3.7

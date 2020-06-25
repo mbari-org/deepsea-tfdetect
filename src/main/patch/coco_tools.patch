@@ -1,0 +1,14 @@
+--- .//install/tensorflow_models/research/object_detection/metrics/coco_tools.py	2019-03-23 23:23:22.000000000 -0700
++++ .//install/tensorflow_models/research/object_detection/metrics/coco_tools.py	2019-07-16 21:56:16.000000000 -0700
+@@ -237,6 +237,11 @@
+     self.accumulate()
+     self.summarize()
+ 
++    # add for metrics per catergory from here
++    if include_metrics_per_category is True:
++        self.summarize_per_category()
++    # add for metrics per category end here
++
+     summary_metrics = OrderedDict([
+         ('Precision/mAP', self.stats[0]),
+         ('Precision/mAP@.50IOU', self.stats[1]),
