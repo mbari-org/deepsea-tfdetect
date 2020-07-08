@@ -7,7 +7,7 @@
 
 # About
 
-# deepsea-tfdetect # is a TensorFlow object detector for use in ML workflows with the MLFlow framework. Example models are modified for small object detection.  Uses the [Tensorflow Object Detection API](https://github.com/tensorflow/models/tree/master/research/object_detection) and stores results in a [MLFlow](https://github.com/mlflow/mlflow) tracking server and optionally in the [Wandb](http://wandb.com) service.
+*deepsea-tfdetect* is a TensorFlow object detector for use in ML workflows with the MLFlow framework. Example models are modified for small object detection.  Uses the [Tensorflow Object Detection API](https://github.com/tensorflow/models/tree/master/research/object_detection) and stores results in a [MLFlow](https://github.com/mlflow/mlflow) tracking server and optionally in the [Wandb](http://wandb.com) service.
 
 Quite a few models are supported, including:
 1. Single Shot Multibox Detector ([SSD](https://arxiv.org/abs/1512.02325)) with [MobileNets](https://arxiv.org/abs/1704.04861)
