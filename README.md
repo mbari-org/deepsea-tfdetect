@@ -1,13 +1,21 @@
-# deepsea-tfdetect #
-MBARI Deep Sea Image Object Detector
-This is a dockerized implementation of the TensorFlow object detector for use in ML workflows with the MLFlow framework.
-It trains images using the [Tensorflow Object Detection API](https://github.com/tensorflow/models/tree/master/research/object_detection) and stores results in a [MLFlow](https://github.com/mlflow/mlflow) tracking server and optionally in the [Wandb](http://wandb.com) service.
-Quite a few models are supported in the API, including:
+[MBARI](https://www.mbari.org/wp-content/uploads/2014/11/logo-mbari-3b.png)
+<p align="right">
+ <b> <a href="https://github.com/semantic-release/semantic-release"> <img src="https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg" title="semantic-release"/> </a> </b> <br>
+    <b> <img src="https://img.shields.io/badge/Supported%20Platforms-Windows%20%7C%20macOS%20%7C%20Linux-green" title="Supported Platforms"/> </b> <br>
+    <b> <img src="https://img.shields.io/badge/license-GPL-blue" title="license-GPL"/> </b> <br>
+</p>
+
+# About
+
+# deepsea-tfdetect # is a TensorFlow object detector for use in ML workflows with the MLFlow framework. Example models are modified for small object detection.  Uses the [Tensorflow Object Detection API](https://github.com/tensorflow/models/tree/master/research/object_detection) and stores results in a [MLFlow](https://github.com/mlflow/mlflow) tracking server and optionally in the [Wandb](http://wandb.com) service.
+
+Quite a few models are supported, including:
 1. Single Shot Multibox Detector ([SSD](https://arxiv.org/abs/1512.02325)) with [MobileNets](https://arxiv.org/abs/1704.04861)
 2. SSD with [Inception v2](https://arxiv.org/abs/1512.00567)
 3. [Region-Based Fully Convolutional Networks](https://arxiv.org/abs/1605.06409) (R-FCN) with [Resnet](https://arxiv.org/abs/1512.03385) 101
 4. [Faster RCNN](https://arxiv.org/abs/1506.01497) with Resnet 101
 5. Faster RCNN with [Inception Resnet v2](https://arxiv.org/abs/1602.07261)
+
 ## MLFlow details
 This module creates a custom python function model that wraps the TensorFlow object 
 detection model.  Artifacts needed to run the prediction are uploaded to the MLFlow server and can be later downloaded
@@ -47,7 +55,8 @@ my-bucket
 ## Prerequisites
  - Python version 3.6.1 
 - minio/AWS storage
-- (optional) W&B account 
+- (optional) W&B account
+ 
 ## Running
 Build docker image for GPU training.
 ```bash
@@ -55,9 +64,9 @@ Build docker image for GPU training.
 ```
 You can also build a CPU version for testing on your desktop but this is not recommended.
 If using the CPU, replace gpu with cpu in toMLproject and src/nose/Dockerfile, e.g.
-mbari/avedac-cpu-kclassify not mbari/avedac-gpu-kclassify 
+mbari/deepsea-cpu-kclassify not mbari/deepsea-gpu-kclassify 
 ```bash
-    ./build.sh CPU
+./build.sh CPU
 ```
 Start a local Minio and MLFlow server
 ```bash
@@ -119,8 +128,8 @@ python src/predict.py --image_path $PWD/data/testimages/images.tar.gz --s3_resul
 
 Checking bucket to save to s3://testresults
 An error occurred (BucketAlreadyOwnedByYou) when calling the CreateBucket operation: Your previous request to create the named bucket succeeded and you already own it.
-Downloading images from /raid/dcline-admin/avedac-tfdetect-docker/data/testimages/images.tar.gz
-Unpacking /raid/dcline-admin/avedac-tfdetect-docker/data/testimages/images.tar.gz
+Downloading images from /raid/dcline-admin/deepsea-tfdetect-docker/data/testimages/images.tar.gz
+Unpacking /raid/dcline-admin/deepsea-tfdetect-docker/data/testimages/images.tar.gz
 Searching for files in /tmp/tmpd51au5qj
 Found 2 total images
 Converting /tmp/tmpd51au5qj/D0232_03HD_00-14-25.png to jpeg
