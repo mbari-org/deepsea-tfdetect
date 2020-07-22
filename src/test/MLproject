@@ -1,11 +1,11 @@
-name: avedac-tfdetect
+name: deepsea-tfdetect
 
 entry_points:
   main:
     parameters:
       checkpoint_url: {type: string, default: "https://www.dropbox.com/s/3lgxuottgwh7tal/faster_rcnn_resnet101_coco_2018_01_28.tar.gz?dl=1"}
       data_bucket: {type: string, default: "s3://test"}
-      notes:  {type: string, default: "test mbari/avedac-gpu-tfdetect"}
+      notes:  {type: string, default: "test mbari/deepsea-gpu-tfdetect"}
       image_mean:  {type: string, default: "108.79285239 131.44784338 106.67269749"}
       image_dims: {type: string, default: "960x540x3"}
       model_arch: {type: string, default: "frcnn"}
