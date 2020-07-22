@@ -63,14 +63,14 @@ Build docker image for GPU training.
 ./build.sh GPU
 ```
 You can also build a CPU version for testing on your desktop but this is not recommended.
-If using the CPU, replace gpu with cpu in toMLproject and src/nose/Dockerfile, e.g.
+If using the CPU, replace gpu with cpu in MLproject and src/nose/Dockerfile, e.g.
 mbari/deepsea-cpu-kclassify not mbari/deepsea-gpu-kclassify 
 ```bash
 ./build.sh CPU
 ```
 Start a local Minio and MLFlow server
 ```bash
-cd src/test && docker-compose -f docker-compose.local.yml up --build
+cd src/test && docker-compose -f docker-compose.local.yml up -d --build
 ```
 Set up a python virtual environment
 ```bash
@@ -163,7 +163,7 @@ nosetests       |
 nosetests       | OK
 nosetests exited with code 0
 ```
-Clean-up with
+Clean-up with. This should be done following each test.
 ```bash
 cd src/test && docker-compose down -v
 ```
