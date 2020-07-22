@@ -170,20 +170,10 @@ def check_s3(bucket_name, endpoint_url=None):
     :param bucket_name: name of the bucket to check
     :return:
     '''
-    env = os.environ.copy()
     if endpoint_url:
-        s3 = boto3.resource('s3',
-                            endpoint_url=endpoint_url,
-                            aws_access_key_id=env['AWS_ACCESS_KEY_ID'],
-                            aws_secret_access_key=env['AWS_SECRET_ACCESS_KEY'],
-                            config=Config(signature_version='s3v4'),
-                            region_name=env['AWS_DEFAULT_REGION'])
+        s3 = boto3.resource('s3', endpoint_url=endpoint_url)
     else:
-        s3 = boto3.resource('s3',
-                            aws_access_key_id=env['AWS_ACCESS_KEY_ID'],
-                            aws_secret_access_key=env['AWS_SECRET_ACCESS_KEY'],
-                            config=Config(signature_version='s3v4'),
-                            region_name=env['AWS_DEFAULT_REGION'])
+        s3 = boto3.resource('s3')
 
     try:
         s3.create_bucket(Bucket=bucket_name)
