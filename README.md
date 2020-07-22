@@ -70,7 +70,7 @@ mbari/deepsea-cpu-kclassify not mbari/deepsea-gpu-kclassify
 ```
 Start a local Minio and MLFlow server
 ```bash
-cd src/test && docker-compose -f docker-compose.local.yml up -d --build
+    cd src/test && docker-compose -f docker-compose.local.yml up -d --build
 ```
 Set up a python virtual environment
 ```bash

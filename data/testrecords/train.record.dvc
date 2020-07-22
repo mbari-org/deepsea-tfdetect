@@ -1,0 +1,3 @@
+outs:
+- md5: c28e7a6307d9d653a5e90e0450258bf2
+  path: train.record

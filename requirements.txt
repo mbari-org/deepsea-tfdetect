@@ -7,3 +7,4 @@ boto3==1.9.174
 wandb==0.8.9
 python-dotenv==0.11.0
 docker
+dvc==1.1.11
