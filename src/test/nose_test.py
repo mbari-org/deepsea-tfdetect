@@ -74,7 +74,7 @@ def test_train():
         print('Creating experiment test and storing results in s3://test bucket')
         mlflow.create_experiment('test', 's3://experiment')
         print('Running experiment...')
-        os.environ['ENV'] = os.getcwd() + '/.env'
+        os.environ['ENV'] = os.getcwd() + '/test.nose.env'
         mlflow.run(os.getcwd(), experiment_name='test', use_conda=False)
     except Exception as ex:
         raise ex

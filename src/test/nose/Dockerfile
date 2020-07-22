@@ -1,4 +1,4 @@
-FROM mbari/deepsea-cpu-tfdetect
+FROM mbari/deepsea-gpu-tfdetect
 USER root
 ADD requirements.txt .
 RUN pip install -r requirements.txt

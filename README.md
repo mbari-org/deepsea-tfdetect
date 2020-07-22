@@ -63,7 +63,7 @@ Build docker image for GPU training.
 ./build.sh GPU
 ```
 You can also build a CPU version for testing on your desktop but this is not recommended.
-If using the CPU, replace gpu with cpu in MLproject and src/nose/Dockerfile, e.g.
+If using the CPU, replace gpu with cpu in MLproject and src/tetst/nose/Dockerfile, e.g.
 mbari/deepsea-cpu-kclassify not mbari/deepsea-gpu-kclassify 
 ```bash
 ./build.sh CPU
@@ -78,17 +78,25 @@ virtualenv --python=/usr/bin/python3.6 .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 ```
-Upload data into s3 buckets for testing training and inference, e.g.
+Setup buckets and upload data into s3 buckets for training
 ```
-python src/test/upload.py
+python src/test/setup.py
 ```
-Create .env file with test environment parameters e.g.
+Create .env file with test environment parameters copied from e.g. src/test/test.local.env
+Note that you would modify these if using an alternative bucket store
 ```
+
+MINIO_ACCESS_KEY=AKEXAMPLE9F123
+AWS_ACCESS_KEY_ID=AKEXAMPLE9F123
+MINIO_SECRET_KEY=wJad56Utn4EMI/KDMNF/FOOBAR9877
+AWS_SECRET_ACCESS_KEY=wJad56Utn4EMI/KDMNF/FOOBAR9877
+
 AWS_DEFAULT_REGION=us-east-1
-AWS_ACCESS_KEY_ID=<your access key>
-AWS_SECRET_ACCESS_KEY=<your secret key>
-MLFLOW_TRACKING_URI=<your tracking URI, e.g. http://localhost:5000>
-(for local testing only - not needed for AWS) MLFLOW_S3_ENDPOINT_URL=<your S3 endpoint for minio only, e.g. http://localhost:9000>
+AWS_ACCESS_KEY_ID=AKEXAMPLE9F123
+AWS_SECRET_ACCESS_KEY=wJad56Utn4EMI/KDMNF/FOOBAR9877
+MLFLOW_TRACKING_URI=http://localhost:5001
+MLFLOW_S3_ENDPOINT_URL=http://localhost:9001
+(for local testing only - not needed for AWS) 
 ```
 If logging to wandb also, add
 ```
@@ -104,8 +112,8 @@ Run training
  mlflow run .
 ```
 Optionally, create and experiment called "test", saving the results to the bucket s3://test and log to the run to that
+Here, we assume the setup.py has already been run
 ```bash
-TODO: add instructions for creating the bucket test
 mlflow experiments create -n test -l s3://test
 mlflow run --experiment-name test .
 ``` 
@@ -145,7 +153,7 @@ end
 ## Testing
 
 ```bash
-cd src/test && docker-compose  up --build --abort-on-container-exit
+cd src/test && docker-compose -f docker-compose.nose.yml up --build --abort-on-container-exit
 ```
 If the test is successful, should see something ending in
 ```bash
@@ -165,5 +173,5 @@ nosetests exited with code 0
 ```
 Clean-up with. This should be done following each test.
 ```bash
-cd src/test && docker-compose down -v
+cd src/test && docker-compose  -f docker-compose.nose.yml down -v
 ```
