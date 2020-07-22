@@ -13,27 +13,27 @@ Utilities for running TensorFlow object detection models
 @author: __author__
 @status: __status__
 @license: __license__
-'''  
-import os
-import sys 
+'''
+
+import sys
 import tarfile
 from six.moves import urllib
 import glob
 import boto3
 from botocore.client import Config
 import botocore
-import os
 from urllib.parse import urlparse
 import os, pickle
 import tempfile
 import shutil
 
+
 def clean_dir(base_dir):
-    '''
+    """
     Removes files from directory
     :param base_dir:
     :return:
-    '''
+    """
     for f in os.listdir(base_dir):
         file_path = os.path.join(base_dir, f)
         try:
@@ -42,12 +42,13 @@ def clean_dir(base_dir):
         except Exception as e:
             print(e)
 
+
 def check_pid(pid):
-    '''
+    """
     Check process id by executing kill with no signal
     :param pid:
     :return:
-    '''
+    """
     try:
         os.kill(pid, 0)
     except OSError:
@@ -55,39 +56,40 @@ def check_pid(pid):
     else:
         return True
 
+
 def maybe_download_and_extract(data_url, dest_dir='/tmp/model'):
-  """
+    """
   Download and extract model tar file.  If the pretrained model we're using doesn't already exist,
    downloads it and unpacks it into a directory.
   :param data_url:  url where tar.gz file exists
   :param dest_dir:  destination directory untar to
   :return:
   """
-  if not os.path.exists(dest_dir):
-    print('Creating ' + dest_dir)
-    os.makedirs(dest_dir)
-  filename = data_url.split('/')[-1]
-  filepath = os.path.join(dest_dir, filename.split('?')[0])
-  if not os.path.exists(filepath):
+    if not os.path.exists(dest_dir):
+        print('Creating ' + dest_dir)
+        os.makedirs(dest_dir)
+    filename = data_url.split('/')[-1]
+    filepath = os.path.join(dest_dir, filename.split('?')[0])
+    if not os.path.exists(filepath):
+        def _progress(count, block_size, total_size):
+            sys.stdout.write('\r>> Downloading %s %.1f%%' %
+                             (filename,
+                              float(count * block_size) / float(total_size) * 100.0))
+            sys.stdout.flush()
 
-    def _progress(count, block_size, total_size):
-      sys.stdout.write('\r>> Downloading %s %.1f%%' %
-                       (filename,
-                        float(count * block_size) / float(total_size) * 100.0))
-      sys.stdout.flush()
+        dst, _ = urllib.request.urlretrieve(data_url, filepath, _progress)
+        statinfo = os.stat(dst)
+        print('Successfully downloaded', dst, statinfo.st_size, 'bytes.')
+        tarfile.open(dst, 'r:gz').extractall(dest_dir)
 
-    dst, _ = urllib.request.urlretrieve(data_url, filepath, _progress)
-    statinfo = os.stat(dst) 
-    print('Successfully downloaded', dst, statinfo.st_size, 'bytes.')
-    tarfile.open(dst, 'r:gz').extractall(dest_dir)
 
 def download(checkpoint_url, out_dir):
-    '''
+    """
     download checkpoint from url
     :param checkpoint_url: the URL for the checkpoing
     :param out_dir: output directory to store to
     :return:
-    '''
+    """
     # download
     maybe_download_and_extract(checkpoint_url, out_dir)
     filename = checkpoint_url.split('/')[-1]
@@ -100,12 +102,14 @@ def download(checkpoint_url, out_dir):
         return check_point
     raise Exception('Cannot find checkpoint file in {}'.format(checkpoint_url))
 
+
 def download_s3(endpoint_url, source_bucket, target_dir):
     try:
         env = os.environ.copy()
         urlp = urlparse(source_bucket)
         bucket_name = urlp.netloc
-        print('Downloading {} bucket: {} using {} endpoint_url {}'.format(source_bucket, bucket_name, target_dir, endpoint_url))
+        print('Downloading {} bucket: {} using {} endpoint_url {}'.format(source_bucket, bucket_name, target_dir,
+                                                                          endpoint_url))
         s3 = boto3.resource('s3',
                             endpoint_url=endpoint_url,
                             aws_access_key_id=env['AWS_ACCESS_KEY_ID'],
@@ -122,7 +126,8 @@ def download_s3(endpoint_url, source_bucket, target_dir):
                 print("The object does not exist.")
             print(e)
     except Exception as e:
-        raise(e)
+        raise e
+
 
 def upload_s3(target_bucket, target_file, endpoint_url=None):
     '''
@@ -157,6 +162,7 @@ def upload_s3(target_bucket, target_file, endpoint_url=None):
     except botocore.exceptions.ClientError as e:
         print(e)
 
+
 def check_s3(bucket_name, endpoint_url=None):
     '''
     Check bucket by creating the s3 bucket - this will either create or return the existing bucket
@@ -184,6 +190,7 @@ def check_s3(bucket_name, endpoint_url=None):
     except botocore.exceptions.ClientError as e:
         print(e)
 
+
 def run_in_separate_process(func, *args, **kwds):
     pread, pwrite = os.pipe()
     pid = os.fork()
@@ -206,16 +213,17 @@ def run_in_separate_process(func, *args, **kwds):
             status = 1
         with os.fdopen(pwrite, 'wb') as f:
             try:
-                pickle.dump((status,result), f, pickle.HIGHEST_PROTOCOL)
+                pickle.dump((status, result), f, pickle.HIGHEST_PROTOCOL)
             except pickle.PicklingError as exc:
-                pickle.dump((2,exc), f, pickle.HIGHEST_PROTOCOL)
+                pickle.dump((2, exc), f, pickle.HIGHEST_PROTOCOL)
     os._exit(0)
 
+
 def check_env():
-    '''
+    """
     Checks required environmental keys
     :return: False is any key missing
-    '''
+    """
     required_keys = ['WANDB_ENTITY', 'WANDB_USERNAME', 'MLFLOW_S3_ENDPOINT_URL',
                      'AWS_ACCESS_KEY_ID', 'AWS_SECRET_ACCESS_KEY', 'WANDB_PROJECT',
                      'WANDB_GROUP', 'MLFLOW_TRACKING_URI', 'AWS_DEFAULT_REGION']
