@@ -10,6 +10,6 @@ entry_points:
       image_dims: {type: string, default: "960x540x3"}
       model_arch: {type: string, default: "frcnn"}
       model_template: {type: string, default: "faster_rcnn_resnet101_coco_300_smallanchor_random_crop_image_mean_stride16.pipeline.template"}
-      num_train_steps: {type: int, default: 100}
+      num_train_steps: {type: int, default: 10}
       timeout_secs: {type: int, default: 5000}
     command: "python /app/run.py --checkpoint_url {checkpoint_url} --model_arch {model_arch} --model_template {model_template} --num_train_steps={num_train_steps} --timeout_secs {timeout_secs}  --image_dims {image_dims} --data_bucket {data_bucket} --image_mean {image_mean}"
