@@ -30,8 +30,8 @@ RUN cd ${TF_HOME}/tensorflow_models/research && protoc object_detection/protos/*
 # Install essential python packages
 RUN pip3 install --upgrade pip
 RUN pip3 install Cython==0.28.2
-ADD requirements.txt .
-RUN pip3 install -r requirements.txt
+ADD requirements.docker.txt .
+RUN pip3 install -r requirements.docker.txt
 
 # Patch to put back in coco eval metrics and inference patch
 ADD src/main/patch/ ${TF_HOME}
