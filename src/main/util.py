@@ -102,20 +102,21 @@ def download(checkpoint_url, out_dir):
         return check_point
     raise Exception('Cannot find checkpoint file in {}'.format(checkpoint_url))
 
-
-def download_s3(endpoint_url, source_bucket, target_dir):
+def download_s3(source_bucket, target_dir):
     try:
         env = os.environ.copy()
         urlp = urlparse(source_bucket)
         bucket_name = urlp.netloc
-        print('Downloading {} bucket: {} using {} endpoint_url {}'.format(source_bucket, bucket_name, target_dir,
-                                                                          endpoint_url))
+        if 'MLFLOW_S3_ENDPOINT_URL' in os.environ: 
+            endpoint_url = os.environ['MLFLOW_S3_ENDPOINT_URL']
+        else:
+            endpoint_url = None
+        print('Downloading {} bucket: {} using {} endpoint_url {}'.format(source_bucket, bucket_name, target_dir, endpoint_url))
         s3 = boto3.resource('s3',
                             endpoint_url=endpoint_url,
                             aws_access_key_id=env['AWS_ACCESS_KEY_ID'],
                             aws_secret_access_key=env['AWS_SECRET_ACCESS_KEY'],
-                            config=Config(signature_version='s3v4', connect_timeout=5, read_timeout=5),
-                            region_name='us-east-1')
+                            config=Config(signature_version='s3v4', connect_timeout=5, read_timeout=5))
         try:
             bucket = s3.Bucket(bucket_name)
             for s3_object in bucket.objects.all():
@@ -129,10 +130,9 @@ def download_s3(endpoint_url, source_bucket, target_dir):
         raise e
 
 
-def upload_s3(target_bucket, target_file, endpoint_url=None):
+def upload_s3(target_bucket, target_file):
     '''
     Upload to s3 bucket
-    :param endpoint_url: endpoint for the s3 service; for minio use only
     :param target_bucket: name of the bucket to upload to
     :param target_file: file to upload
     :return:
@@ -141,20 +141,16 @@ def upload_s3(target_bucket, target_file, endpoint_url=None):
     urlp = urlparse(target_bucket)
     print(urlp)
     bucket_name = urlp.netloc
-    print('Uploading {} to bucket {} using endpoint_url {}'.format(target_file, target_bucket, endpoint_url))
-    if endpoint_url:
-        s3 = boto3.resource('s3',
-                            endpoint_url=endpoint_url,
-                            aws_access_key_id=env['AWS_ACCESS_KEY_ID'],
-                            aws_secret_access_key=env['AWS_SECRET_ACCESS_KEY'],
-                            config=Config(signature_version='s3v4'),
-                            region_name=env['AWS_DEFAULT_REGION'])
+    if 'MLFLOW_S3_ENDPOINT_URL' in os.environ: 
+        endpoint_url = os.environ['MLFLOW_S3_ENDPOINT_URL']
+        print('Uploading {} to bucket {} using endpoint_url {}'.format(target_file, target_bucket, endpoint_url))
     else:
-        s3 = boto3.resource('s3',
-                            aws_access_key_id=env['AWS_ACCESS_KEY_ID'],
-                            aws_secret_access_key=env['AWS_SECRET_ACCESS_KEY'],
-                            config=Config(signature_version='s3v4'),
-                            region_name=env['AWS_DEFAULT_REGION'])
+        endpoint_url = None
+        print('Uploading {} to bucket {}'.format(target_file, target_bucket))
+    if endpoint_url:
+        s3 = boto3.resource('s3', endpoint_url=endpoint_url)
+    else:
+        s3 = boto3.resource('s3')
 
     try:
         data = open(target_file, 'rb')
@@ -162,14 +158,17 @@ def upload_s3(target_bucket, target_file, endpoint_url=None):
     except botocore.exceptions.ClientError as e:
         print(e)
 
-
-def check_s3(bucket_name, endpoint_url=None):
+def check_s3(bucket_name):
     '''
     Check bucket by creating the s3 bucket - this will either create or return the existing bucket
-    :param endpoint_url: endpoint for the s3 service; for minio use only
     :param bucket_name: name of the bucket to check
     :return:
     '''
+    env = os.environ.copy()
+    if 'MLFLOW_S3_ENDPOINT_URL' in os.environ: 
+        endpoint_url = os.environ['MLFLOW_S3_ENDPOINT_URL']
+    else:
+        endpoint_url = None
     if endpoint_url:
         s3 = boto3.resource('s3', endpoint_url=endpoint_url)
     else:
@@ -214,9 +213,7 @@ def check_env():
     Checks required environmental keys
     :return: False is any key missing
     """
-    required_keys = ['WANDB_ENTITY', 'WANDB_USERNAME', 'MLFLOW_S3_ENDPOINT_URL',
-                     'AWS_ACCESS_KEY_ID', 'AWS_SECRET_ACCESS_KEY', 'WANDB_PROJECT',
-                     'WANDB_GROUP', 'MLFLOW_TRACKING_URI', 'AWS_DEFAULT_REGION']
+    required_keys = [ 'AWS_ACCESS_KEY_ID', 'AWS_SECRET_ACCESS_KEY', 'MLFLOW_TRACKING_URI', 'AWS_DEFAULT_REGION']
     for k in required_keys:
         if k not in os.environ.keys():
             print('Need to set ' + k)
@@ -237,8 +234,7 @@ def unpack(out_dir, tar_file):
             os.makedirs(out_dir)
         # download first then untar
         target_dir = tempfile.mkdtemp()
-        download_s3(endpoint_url=os.environ['MLFLOW_S3_ENDPOINT_URL'], source_bucket=tar_file,
-                    target_dir=target_dir)
+        download_s3(source_bucket=tar_file, target_dir=target_dir)
         os.listdir(target_dir)
         t = os.path.join(target_dir, os.path.basename(tar_file))
         print('Unpacking {}'.format(t))
