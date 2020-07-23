@@ -107,11 +107,7 @@ WANDB_MODE=run
 WANDB_GROUP=test
 WANDB_PROJECT=test-project
 ```
-Run training
-```bash
- mlflow run .
-```
-Optionally, create and experiment called "test", saving the results to the bucket s3://test and log to the run to that
+Create and experiment called "test", saving the results to the bucket s3://test and log to the run to that
 Here, we assume the setup.py has already been run
 ```bash
 mlflow experiments create -n test -l s3://test
