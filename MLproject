@@ -9,12 +9,12 @@ entry_points:
   main:
     parameters:
       checkpoint_url: {type: string, default: "https://www.dropbox.com/s/3lgxuottgwh7tal/faster_rcnn_resnet101_coco_2018_01_28.tar.gz?dl=1"}
-      data_bucket: {type: string, default: "s3://testdata"}
+      data_bucket: {type: string, default: "s3://test"}
       notes:  {type: string, default: "test mbari/deepsea-gpu-tfdetect"}
       image_mean:  {type: string, default: "108.79285239 131.44784338 106.67269749"}
       image_dims: {type: string, default: "960x540x3"}
       model_arch: {type: string, default: "frcnn"}
-      model_template: {type: string, default: "faster_rcnn_resnet101_coco_300_smallanchor_random_crop_image_mean_stride8.pipeline.template"}
+      model_template: {type: string, default: "faster_rcnn_resnet101_coco_300_smallanchor_random_crop_image_mean_stride16.pipeline.template"}
       num_train_steps: {type: int, default: 100}
       timeout_secs: {type: int, default: 5000}
     command: "python /app/run.py --checkpoint_url {checkpoint_url} --model_arch {model_arch} --model_template {model_template} --num_train_steps={num_train_steps} --timeout_secs {timeout_secs}  --image_dims {image_dims} --data_bucket {data_bucket} --image_mean {image_mean}"
