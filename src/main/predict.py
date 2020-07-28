@@ -71,11 +71,10 @@ class Predict(Thread):
             temp_dir_in = tempfile.mkdtemp()
             temp_dir_out = tempfile.mkdtemp()
             coder = ImageCoder()
-            endpoint_url = os.environ['MLFLOW_S3_ENDPOINT_URL']
 
             print('Checking bucket to save to {}'.format(self.s3_results_bucket))
             f = urlparse(self.s3_results_bucket)
-            util.check_s3(f.netloc, endpoint_url)
+            util.check_s3(f.netloc)
 
             print('Downloading images from {}'.format(self.image_path))
             util.unpack(temp_dir_in, self.image_path)
@@ -132,7 +131,7 @@ class Predict(Thread):
                 tar.add(temp_dir_out, arcname='.')
 
             print('Uploading results to {}'.format(self.s3_results_bucket))
-            util.upload_s3(self.s3_results_bucket, out_file, endpoint_url)
+            util.upload_s3(self.s3_results_bucket, out_file)
 
             print('Done')
 
