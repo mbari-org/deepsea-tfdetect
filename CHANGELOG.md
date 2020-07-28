@@ -1,5 +1,13 @@
 # MBARI Deep Sea Tensorflow Object Detection Changelog
 
+## [1.0.2](http://bitbucket.org/mbari/deepsea-tfdetect/compare/v1.0.1...v1.0.2) (2020-07-23)
+
+
+### Bug Fixes
+
+* **requirements.txt:** revert dvc to compatible version on digits ([52c5858](http://bitbucket.org/mbari/deepsea-tfdetect/commits/52c5858b3e9f38152ec553d8128804689d5f51f1))
+* **util.py:** removed WANDB requirement and redundant args to boto3 ([953dcde](http://bitbucket.org/mbari/deepsea-tfdetect/commits/953dcdeecc3c39c48365629e6ec8cdac7e344530))
+
 ## [1.0.1](http://bitbucket.org/mbari/deepsea-tfdetect/compare/v1.0.0...v1.0.1) (2020-07-22)
 
 
