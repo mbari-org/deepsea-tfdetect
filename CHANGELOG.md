@@ -1,5 +1,12 @@
 # MBARI Deep Sea Tensorflow Object Detection Changelog
 
+# [1.1.0](http://bitbucket.org/mbari/deepsea-tfdetect/compare/v1.0.3...v1.1.0) (2020-11-04)
+
+
+### Features
+
+* upgraded wandb logging to support resume and uploading of checkpoints ([d0e621c](http://bitbucket.org/mbari/deepsea-tfdetect/commits/d0e621cf7755e1cb09257d663758dba179816db0))
+
 ## [1.0.3](http://bitbucket.org/mbari/deepsea-tfdetect/compare/v1.0.2...v1.0.3) (2020-11-04)
 
 
