@@ -63,14 +63,14 @@ def rename_key(description):
     return desc_pattern.sub(lambda m: rep[re.escape(m.group(0))], description.strip())
 
 
-def setup_wandb(parser_args):
+def setup_wandb(setup):
     """
     Checks if wandb is configured according to environment variable keys, and if so initializes run
-    :parser_args: parser objects to log to wandb
+    :setup: training setup
     :return: wandb run object
     """
     keys = ['WANDB_ENTITY', 'WANDB_USERNAME', 'WANDB_API_KEY', 'WANDB_PROJECT',
-                     'WANDB_GROUP', ]
+                     'WANDB_RUN_GROUP', ]
     run = None
     has_wandb_keys = True
     for key in keys:
@@ -79,12 +79,11 @@ def setup_wandb(parser_args):
             has_wandb_keys = False
 
     if has_wandb_keys:
-        run = wandb.init(notes=parser_args.notes, job_type='training', entity=os.environ['WANDB_ENTITY'],
-                         project=os.environ['WANDB_PROJECT'], group=os.environ['WANDB_GROUP'])
-
-        # adds all of the arguments as config variables
-        wandb.config.update(parser_args)
-
+        if glob.iglob(setup.model_dir + '/**/*.ckpt*'):
+            run = wandb.init(config=setup.parser_args, notes=setup.parser_args.notes, job_type='train', resume=True)
+        else:
+            run = wandb.init(config=setup.parser_args, notes=setup.parser_args.notes, job_type='train', resume='allow')
+        
     return run
 
 
@@ -186,7 +185,7 @@ if __name__ == '__main__':
         tracking_client = mlflow.tracking.MlflowClient()
         print('Connection succeeded')
 
-        run = setup_wandb(setup.args)
+        run = setup_wandb(setup)
         if run:
             run_id = run.id
             has_wandb = True
@@ -220,8 +219,9 @@ if __name__ == '__main__':
         if has_wandb:
             # upload tensorflow events but exclude checkpoints
             print('Uploading tensorflow run to wandb...')
-            check_call(['wandb', 'sync', '--id', run.id, '--ignore', '*.tar.gz,*.ckpt*,*.pb,checkpoint', '-p',
-                        os.environ['WANDB_PROJECT'], '-e', os.environ['WANDB_ENTITY'], setup.model_dir], stderr=STDOUT)
+            check_call(['wandb', 'sync', '--id', run.id, '--ignore', '*.tar.gz', '-p',
+                        os.environ['WANDB_PROJECT'], '-e', os.environ['WANDB_ENTITY'], 
+                        setup.model_dir], stderr=STDOUT)
 
     except Exception as ex:
         print(ex)
