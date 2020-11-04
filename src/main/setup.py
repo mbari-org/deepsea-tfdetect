@@ -94,6 +94,7 @@ class Setup(Thread):
             self.scratch_dir = scratch_dir
             self.checkpoint_dir = os.path.join(self.scratch_dir, 'models')
             self.model_dir = self.checkpoint_dir
+            self.pipeline_config_out = '{}/pipeline.config'.format(self.model_dir)
             self.identifier = self.parser_args.model_template
             self.timeout_secs = self.parser_args.timeout_secs
             self.notes = self.parser_args.notes
@@ -113,7 +114,7 @@ class Setup(Thread):
         try:
             pipeline_config_in = '{}/{}'.format(self.scratch_dir, self.parser_args.model_template)
             util.clean_dir(self.scratch_dir)
-            util.download_s3(os.environ['MLFLOW_S3_ENDPOINT_URL'], self.parser_args.data_bucket, self.scratch_dir)
+            util.download_s3(self.parser_args.data_bucket, self.scratch_dir)
             if not os.path.exists(pipeline_config_in):
                 raise Exception('Missing {}'.format(pipeline_config_in))
             self.pipeline_config_out = '{}/pipeline.config'.format(self.model_dir)
