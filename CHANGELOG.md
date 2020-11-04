@@ -1,5 +1,13 @@
 # MBARI Deep Sea Tensorflow Object Detection Changelog
 
+## [1.0.3](http://bitbucket.org/mbari/deepsea-tfdetect/compare/v1.0.2...v1.0.3) (2020-11-04)
+
+
+### Bug Fixes
+
+* default pipeline and remove extra arg ([5ca4bc2](http://bitbucket.org/mbari/deepsea-tfdetect/commits/5ca4bc21a681499f0134da773237b9781a5a7bfa))
+* **mlproject:** correct model template and bucket aligned with README.md and setup.py ([17070bf](http://bitbucket.org/mbari/deepsea-tfdetect/commits/17070bfdddaaa9c5060d2c382613749052d8590c))
+
 ## [1.0.2](http://bitbucket.org/mbari/deepsea-tfdetect/compare/v1.0.1...v1.0.2) (2020-07-23)
 
 
